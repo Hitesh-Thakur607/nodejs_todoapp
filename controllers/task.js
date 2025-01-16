@@ -21,23 +21,26 @@ export const newtask = async (req, res, next) => {
 
 
 };
-export const  mytask = async (req, res,next) => {
+export const mytask = async (req, res, next) => {
   try {
     const userid = req.user._id; // Get user ID from the request
 
-    const taskData = await task.findOne({ user:userid }); 
-    if(!taskData){
-      return next(new errorhandler("Invalid id",404))
-    }// Fetch the task
-  res.status(200).json({
-    success: true,
-    taskData
-  })
-  } catch (error) {
-      next(error);
-  }
+    // Fetch all tasks for the user
+    const taskData = await task.find({ user: userid });
 
+    if (!taskData || taskData.length === 0) {
+      return next(new errorhandler("No tasks found for this user", 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      taskData, // Return all tasks
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
 export const  updatetask = async (req, res,next) => {
   try {
     const Task =await task.findById(req.params.id);
