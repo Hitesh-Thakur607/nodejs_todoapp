@@ -30,8 +30,8 @@
 // const PORT = process.env.PORT || 4000;
 // app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-// import express from "express";
-// import dotnev from "dotenv";
+import express from "express";
+import dotnev from "dotenv";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
