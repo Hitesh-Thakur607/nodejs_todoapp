@@ -1,9 +1,10 @@
-import { users } from "../models/user.js"
-import jwt from "jsonwebtoken"
+import { users } from "../models/user.js";
+import jwt from "jsonwebtoken";
+
 export const isauthenticated = async (req, res, next) => {
   try {
-    // Check token from cookies or Authorization header
-    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+    // Extract token from cookies or Authorization header
+    const token = req.cookies?.token || req.headers?.authorization?.split(" ")[1];
 
     if (!token) {
       return res.status(401).json({
@@ -12,21 +13,30 @@ export const isauthenticated = async (req, res, next) => {
       });
     }
 
+    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "default_secret_key");
-    req.user = await users.findById(decoded._id);
 
-    if (!req.user) {
+    // Find user by ID
+    const user = await users.findById(decoded._id);
+    if (!user) {
       return res.status(401).json({
         success: false,
         message: "User not found",
       });
     }
 
+    // Attach user to request object
+    req.user = user;
     next();
+
   } catch (error) {
+    console.error("Authentication Error:", error.message);
+
     return res.status(401).json({
       success: false,
-      message: "Unauthorized: Invalid token",
+      message: error.message.includes('jwt expired')
+        ? "Session expired. Please log in again."
+        : "Unauthorized: Invalid token",
     });
   }
 };
