@@ -45,11 +45,14 @@ const app = express();
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(bodyParser.json());
+
 app.use(cors({
-  origin: [process.env.FRONTEND_URL],
-  methods:["GET","PUT","PUT","DELETE"],
-  WithCredentials:true,
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
 dotnev.config({
   path:"./data/config.env"
 })
