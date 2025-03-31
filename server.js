@@ -48,7 +48,7 @@ app.use(bodyParser.json());
 app.use(cors({
   origin: [process.env.FRONTEND_URL],
   methods:["GET","PUT","PUT","DELETE"],
-  credentials:true,
+  WithCredentials:true,
 }));
 dotnev.config({
   path:"./data/config.env"
